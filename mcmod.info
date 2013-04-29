@@ -1,0 +1,19 @@
+[
+{
+"modid": "mod_ModularComputing",
+"name": "Modular Computing",
+"description": "Adds modular computers.",
+"version": "ALPHA",
+"credits": "",
+"logoFile": "",
+"mcversion": "",
+"url": "",
+"updateUrl": "",
+"authors": [ "asiekierka" ],
+"parent":"",
+"screenshots": [],
+"dependencies": [
+"mod_MinecraftForge"
+]
+}
+]
