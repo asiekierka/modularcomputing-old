@@ -41,7 +41,7 @@ public class NetworkHandler implements IPacketHandler, IGuiHandler {
             switch(ic) {
                 case 1: // Poweron
                     ModularComputing.debug("Launching test CPUThread!");
-                    CPUThread test = new CPUThread(null, 10000, (TileEntityChassis)te);
+                    CPUThread test = new CPUThread(null, (TileEntityChassis)te);
                     Thread tTest = new Thread(test);
                     tTest.start();
                     break;

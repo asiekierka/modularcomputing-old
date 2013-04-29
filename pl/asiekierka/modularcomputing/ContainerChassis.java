@@ -15,7 +15,7 @@ public class ContainerChassis extends ContainerInventory {
 		super(22);
 		tileEntity = te;
 		addSlotToContainer(new SlotModular(IPeripheralClock.class, tileEntity, 0, 16, 16)); // Clock
-		addSlotToContainer(new SlotModular(ItemCPU.class, tileEntity, 1, 54, 16)); // CPU
+		addSlotToContainer(new SlotModular(IPeripheralCPU.class, tileEntity, 1, 54, 16)); // CPU
 		int MAX_LENGTH = 5;
 		for(int j = 0; j < 4; j++) {
 			addSlotToContainer(new SlotModular(IPeripheralMemory.class, tileEntity, 2+j, 8, 68+(j*18))); // Memory

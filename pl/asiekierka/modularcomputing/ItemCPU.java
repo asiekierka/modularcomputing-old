@@ -12,7 +12,7 @@ import net.minecraftforge.event.*;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.relauncher.*;
 
-public class ItemCPU extends Item {
+public class ItemCPU extends Item implements IPeripheralCPU {
     private Icon icon;
 
     public ItemCPU(int id) {
@@ -32,4 +32,5 @@ public class ItemCPU extends Item {
     public void registerIcons(IconRegister ir) {
         icon = ir.registerIcon("modularcomputing:cpu");
     }
+    public ICPUEmulator getCPUEmulator() { return new CPU65c02(); }
 }

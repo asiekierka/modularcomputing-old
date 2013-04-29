@@ -1,3 +1,4 @@
 TODO:
 
 - rewrite ItemRAM not to use NBT (maybe, might bring a major speed improvement)
+- rewrite MemoryHandler to IMemoryHandler and name the impl. MCMemoryHandler (will bring a chance to do standalone emulators)
