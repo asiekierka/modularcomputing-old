@@ -4,7 +4,6 @@ import java.util.*;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
-import net.minecraft.nbt.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.*;
@@ -12,14 +11,14 @@ import net.minecraftforge.event.*;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.relauncher.*;
 
-public class ItemCPU extends Item implements IPeripheralCPU {
+public class ItemDebugger extends Item implements IPeripheralCard {
     private Icon icon;
 
-    public ItemCPU(int id) {
+    public ItemDebugger(int id) {
         super(id);
         this.setCreativeTab(CreativeTabs.tabRedstone);
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("modularcomputing:cpu");
+        this.setUnlocalizedName("modularcomputing:debugger");
     }
     @Override
     @SideOnly(Side.CLIENT)
@@ -27,11 +26,17 @@ public class ItemCPU extends Item implements IPeripheralCPU {
         return icon;
     }
     @Override
-    public boolean getShareTag() { return false; }
-    @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister ir) {
-        icon = ir.registerIcon("modularcomputing:cpu");
+        icon = ir.registerIcon("modularcomputing:debugger");
     }
-    public ICPUEmulator getCPUEmulator() { return new CPU65c02(); }
+    public int getVendorID() { return 42270; }
+    public int getDeviceID() { return 1; }
+    public int read8(CPUThread cpu, ItemStack stack, int position) {
+        ModularComputing.logger.info("[Debugger] Tried to read @ " + position + "!");
+        return 0;
+    }
+    public void write8(CPUThread cpu, ItemStack stack, int position, int val) {
+        ModularComputing.logger.info("[Debugger] Tried to write "+val+" @ " + position + "!");
+    }
 }

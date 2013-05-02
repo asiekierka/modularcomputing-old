@@ -1,0 +1,68 @@
+Use THIS table to implement the 6502 instead of the 65c02:
+
+    public static final int[][] opcodeInfo = {
+        {0x00, 0, 7},		{0x01, modeIX, 6},	null,			null, // 0x00
+        null,			{0x01, modeZP, 3},	{0x02, modeZP, 5},	null,
+        {0xA0, 1, 3}, 		{0x01, modeImm, 2},	{0x02, modeA, 2},	null,
+        null,			{0x01, modeABS, 4},	{0x02, modeABS, 6},	null,
+        {0x80, 0, 2},		{0x01, modeIY, 5},	null,			null, // 0x10
+        null,			{0x01, modeZPX, 4},	{0x02, modeZPX, 6},	null,
+        {0x90, 0, 2},		{0x01, modeABY, 4},	null,			null,
+        null,			{0x01, modeABX, 4},	{0x02, modeABX, 7},	null,
+        {0x03, 0, 6},		{0x04, modeIX, 6},	null,			null, // 0x20
+        {0x05, modeZP, 3},	{0x04, modeZP, 3},	{0x06, modeZP, 5},	null,
+        {0xA0, 0, 4},		{0x04, modeImm, 2},	{0x06, modeA, 2},	null,
+        {0x05, modeABS, 4},	{0x04, modeABS, 4},	{0x06, modeABS, 6},	null,
+        {0x81, 0, 2},		{0x04, modeIY, 5},	null,			null, // 0x30
+        null,			{0x04, modeZPX, 4},	{0x06, modeZPX, 6},	null,
+        {0x90, 1, 2},		{0x04, modeABY, 4},	null,			null,
+        null,			{0x04, modeABX, 4},	{0x06, modeABX, 7},	null,
+        {0x07, 0, 6},		{0x08, modeIX, 6},	null,			null, // 0x40
+        null,			{0x08, modeZP, 3},	{0x09, modeZP, 5},	null,
+        {0xA1, 1, 3},		{0x08, modeImm, 2},	{0x09, modeA, 2},	null,
+        {0x0A, modeABS, 3},	{0x08, modeABS, 4},	{0x09, modeABS, 6},	null,
+        {0x82, 0, 2},		{0x08, modeIY, 5},	null,			null, // 0x50
+        null,			{0x08, modeZPX, 4},	{0x09, modeZPX, 6},	null,
+        {0x91, 0, 2},		{0x08, modeABY, 4},	null,			null,
+        null,			{0x08, modeABX, 4},	{0x09, modeABX, 7},	null,
+        {0x0B, 0, 6},		{0x0C, modeIX, 6},	null,			null, // 0x60
+        null,			{0x0C, modeZP, 3},	{0x0D, modeZP, 5},	null,
+        {0xA1, 0, 4},		{0x0C, modeImm, 2},	{0x0D, modeA, 2},	null,
+        {0x0A, modeIND, 5},	{0x0C, modeABS, 4},	{0x0D, modeABS, 6},	null,
+        {0x83, 0, 2},		{0x0C, modeIY, 5},	null,			null, // 0x70
+        null,			{0x0C, modeZPX, 4},	{0x0D, modeZPX, 6},	null,
+        {0x91, 1, 2},		{0x0C, modeABY, 4},	null,			null,
+        null,			{0x0C, modeABX, 4},	{0x0D, modeABX, 7},	null,
+        null,			{0x0E, modeIX, 6},	null,			null, // 0x80
+        {0x10, modeZP, 3},	{0x0E, modeZP, 3},	{0x0F, modeZP, 3},	null,
+        {0x70, -1, 2},		null,			{0x60, 0, 2},		null,
+        {0x10, modeABS, 4},	{0x0E, modeABS, 4},	{0x0F, modeABS, 4},	null,
+        {0x84, 0, 2},		{0x0E, modeIY, 6},	null,			null, // 0x90
+        {0x10, modeZPX, 4},	{0x0E, modeZPX, 4},	{0x0F, modeZPY, 4},	null,
+        {0x61, 0, 2},		{0x0E, modeABY, 5},	{0x68, 0, 2},		null,
+        null,			{0x0E, modeABX, 5},	null,			null,
+        {0x13, modeImm, 2},	{0x11, modeIX, 6},	{0x12, modeImm, 2},	null, // 0xA0
+        {0x13, modeZP, 3},	{0x11, modeZP, 3},	{0x12, modeZP, 3},	null,
+        {0x62, 0, 2},		{0x11, modeImm, 2},	{0x63, 0, 2},		null,
+        {0x13, modeABS, 4},	{0x11, modeABS, 4},	{0x12, modeABS, 4},	null,
+        {0x85, 0, 2},		{0x11, modeIY, 5},	null,			null, // 0xB0
+        {0x13, modeZPX, 4},	{0x11, modeZPX, 4},	{0x12, modeZPY, 4},	null,
+        {0x92, 0, 2},		{0x11, modeABY, 4},	{0x69, 0, 2},		null,
+        {0x13, modeABX, 4},	{0x11, modeABX, 4},	{0x12, modeABY, 4},	null,
+        {0x16, modeImm, 2},	{0x14, modeIX, 6},	null,			null, // 0xC0
+        {0x16, modeZP, 3},	{0x14, modeZP, 3},	{0x17, modeZP, 5},	null,
+        {0x70, 1, 2},		{0x14, modeImm, 2},	{0x71, -1, 2},		null,
+        {0x16, modeABS, 4},	{0x14, modeABS, 4},	{0x17, modeABS, 6},	null,
+        {0x86, 0, 2},		{0x14, modeIY, 5},	null,			null, // 0xD0
+        null,			{0x14, modeZPX, 4},	{0x17, modeZPX, 6},	null,
+        {0x93, 0, 2},		{0x14, modeABY, 4},	null,			null,
+        null,			{0x14, modeABX, 4},	{0x17, modeABX, 7},	null,
+        {0x15, modeImm, 2},	{0x19, modeIX, 6},	null,			null, // 0xE0
+        {0x15, modeZP, 3},	{0x19, modeZP, 3},	{0x18, modeZP, 5},	null,
+        {0x71, 1, 2},		{0x19, modeImm, 2},	{0x1A, 0, 2},		null,
+        {0x15, modeABS, 4},	{0x19, modeABS, 4},	{0x18, modeABS, 6},	null,
+        {0x87, 0, 2},		{0x19, modeIY, 5},	null,			null, // 0xF0
+        null,			{0x19, modeZPX, 4},	{0x18, modeZPX, 6},	null,
+        {0x93, 1, 2},		{0x19, modeABY, 4},	null,			null,
+        null,			{0x19, modeABX, 4},	{0x18, modeABX, 7},	null
+    };

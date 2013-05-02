@@ -17,6 +17,24 @@ import net.minecraft.world.World;
 import net.minecraft.util.MathHelper;
 
 public class MCHelper {
+        public static final int[][] dir3 = {
+            {-1,0,0}, {0,0,-1}, {1,0,0}, {0,0,1}, {0,-1,0}, {0,1,0}
+        };
+
+        public static int[] fileToIntArray(String fn) {
+            InputStream is = ModularComputing.class.getClassLoader().getResourceAsStream(fn);
+            if(is == null) return null;
+            int[] romData = new int[65536]; // No ROMs above 64K!
+            int lastByte = 0;
+            int i = 0;
+            try {
+                while(lastByte>=0) {
+                    lastByte = is.read();
+                    romData[i++] = lastByte;
+                }
+                return Arrays.copyOfRange(romData,0,i-1);
+            } catch(Exception e) { e.printStackTrace(); return null; }
+        }
         public static NBTTagCompound getTagCompound(ItemStack stack) {
             if(stack.getTagCompound() == null) return new NBTTagCompound();
             else return stack.getTagCompound();

@@ -12,18 +12,14 @@ import net.minecraftforge.event.*;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.relauncher.*;
 
-public class ItemRAM extends Item implements IPeripheralMemory {
-    private static final int minSize = 2;
-    private static final int maxSize = 128;
+public class ItemGPU extends Item implements IPeripheralCard {
     private Icon icon;
 
-    public ItemRAM(int id) {
+    public ItemGPU(int id) {
         super(id);
-        this.setHasSubtypes(true);
-        this.setMaxDamage(0);
         this.setCreativeTab(CreativeTabs.tabRedstone);
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("modularcomputing:ram");
+        this.setUnlocalizedName("modularcomputing:gpu");
     }
     @Override
     @SideOnly(Side.CLIENT)
@@ -31,54 +27,61 @@ public class ItemRAM extends Item implements IPeripheralMemory {
         return icon;
     }
     @Override
-    public String getItemDisplayName(ItemStack stack) {
-        int size = getSize(stack);
-        return StatCollector.translateToLocal("modularcomputing:ram") + " (" + (size/1024) + "KB)";
-    }
-    @Override
-    public String getLocalizedName(ItemStack stack) { return getItemDisplayName(stack); }
-    @Override
-    public boolean getShareTag() { return false; }
-    @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister ir) {
-        icon = ir.registerIcon("modularcomputing:ram");
+        icon = ir.registerIcon("modularcomputing:gpu");
     }
+    public int getVendorID() { return 42270; }
+    public int getDeviceID() { return 2; }
+    @Override
+    public boolean getShareTag() { return false; }
     public int[] getMemArray(ItemStack stack) {
         NBTTagCompound tc = MCHelper.getTagCompound(stack);
         if(!tc.hasKey("memory"))
             init(stack);
         return tc.getIntArray("memory");
     }
-    public int getSize(ItemStack stack) {
-       return stack.getItemDamage() * 1024;
-    }
     public int read8(CPUThread cpu, ItemStack stack, int position) {
-       int size = getSize(stack);
-       if(position < 0 || position >= (size*1024)) return -1;
+       if(position < 0 || position >= 128) return -1;
        int[] array = getMemArray(stack);
        if(array == null) return -1;
        return array[position];
     }
     public void write8(CPUThread cpu, ItemStack stack, int position, int val) {
-        int size = getSize(stack);
-        if(position < 0 || position >= (size*1024)) return;
+        if(position < 0 || position >= 128) return;
         int[] array = getMemArray(stack);
         NBTTagCompound tc = MCHelper.getTagCompound(stack);
         array[position] = val;
-        tc.setIntArray("memory",array);
+        tc.setIntArray("memory",updateRender(cpu,array));
         stack.setTagCompound(tc);
+    }
+    private int[] updateRender(CPUThread cpu, int[] mem) {
+        TileEntityMonitor monitor = cpu.getMonitor();
+        if(monitor == null) { mem[4] = 0; return mem; }
+        if(mem[4] != 0) { // Command area
+            switch(mem[4]) {
+                case 1: // Set pixel (X,Y,col)
+                    monitor.drawPixel(mem[5],mem[6],mem[7]);
+                    break;
+                case 2: // Draw char (cX,cY,chr,col)
+                    monitor.drawChar(mem[5]*8,mem[6]*8,mem[8],mem[7]);
+                    break;
+                case 3: // Draw char (X,Y,chr,col)
+                    monitor.drawChar(mem[5],mem[6],mem[8],mem[7]);
+                    break;
+                case 4: // Scroll up (amount)
+                    monitor.scrollUp(mem[9]);
+                    break;
+                default:
+                    break;
+            }
+            mem[4] = 0;
+        }
+        return mem;
     }
     public void init(ItemStack stack) {
         NBTTagCompound tc = MCHelper.getTagCompound(stack);
-        tc.setIntArray("memory", new int[getSize(stack)]);
+        tc.setIntArray("memory", new int[128]);
         stack.setTagCompound(tc);
-    }
-   // Creative codes
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(int id, CreativeTabs ct, List list) {
-        for(int s = minSize; s <= maxSize; s*=2)
-            list.add(new ItemStack(id, 1, s));
     }
 }

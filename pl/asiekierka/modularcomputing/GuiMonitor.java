@@ -55,7 +55,7 @@ public class GuiMonitor extends GuiScreen {
 	public boolean doesGuiPauseGame() { return false; }
 	@Override
 	public void updateScreen() {
-		monitor.debugRandom();
+		monitor.updateScreen();
 		super.updateScreen();
 	}
 }

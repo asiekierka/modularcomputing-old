@@ -18,13 +18,18 @@ import cpw.mods.fml.common.registry.*;
 @Mod(modid = ModularComputing.ID, version = ModularComputing.VERSION)
 @NetworkMod(channels = { ModularComputing.ID }, packetHandler = NetworkHandler.class, clientSideRequired = true)
 public class ModularComputing {
-        public static final boolean DEBUG = true;
+        public static final boolean DEBUG = false;
+        public static final boolean ROM_WRITES = true;
 	public static final String ID = "ModularComputing";
 	public static final String VERSION = "0.1";
 	public static BlockChassis blockChassis;
 	public static BlockMonitor blockMonitor;
 	public static ItemClock itemRedstoneClock, itemQuartzClock;
 	public static ItemRAM itemRAM;
+	public static ItemROM itemROM;
+	public static ItemCPU itemCPU;
+	public static ItemGPU itemGPU;
+	public static ItemDebugger itemDebugger;
 
 	@Instance(ID)
 	public static ModularComputing instance;
@@ -49,6 +54,13 @@ public class ModularComputing {
 		itemRedstoneClock = new ItemClock(25000, 10, 100, "modularcomputing:redstoneclock");
 		itemRedstoneClock = new ItemClock(25001, 100, 1000, "modularcomputing:quartzclock");
 		itemRAM = new ItemRAM(25002);
+		itemROM = new ItemROM(25003,2);
+		itemCPU = new ItemCPU(25004);
+		itemDebugger = new ItemDebugger(25005);
+		itemGPU = new ItemGPU(25006);
+                itemROM.registerROM("mods/modularcomputing/roms/tinybas.bin","Tiny Basic",0x8000);
+                itemROM.registerROM("mods/modularcomputing/roms/test.bin","Testing",0x8000);
+                itemROM.registerROM("mods/modularcomputing/roms/functest.bin","6502 Functional Test",0x8000);
 		GameRegistry.registerBlock(blockChassis, ItemBlock.class, "blockChassis");
 		GameRegistry.registerTileEntity(TileEntityChassis.class, "containerChassis");
 
@@ -61,6 +73,9 @@ public class ModularComputing {
 		LanguageRegistry.instance().addStringLocalization("modularcomputing:redstoneclock", "Redstone Clock");
 		LanguageRegistry.instance().addStringLocalization("modularcomputing:quartzclock", "Quartz Clock");
 		LanguageRegistry.instance().addStringLocalization("modularcomputing:ram", "Random Access Memory");
+		LanguageRegistry.instance().addStringLocalization("modularcomputing:rom", "Read-Only Memory");
+		LanguageRegistry.instance().addStringLocalization("modularcomputing:debugger", "Read/Write Debugger");
+		LanguageRegistry.instance().addStringLocalization("modularcomputing:cpu", "65c02 Central Processing Unit");
 
 		// item = new Item(Configs.itemId);
 

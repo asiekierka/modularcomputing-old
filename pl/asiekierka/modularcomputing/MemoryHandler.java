@@ -4,13 +4,15 @@ import java.util.*;
 import net.minecraft.item.*;
 
 public class MemoryHandler {
+    private CPUThread cpu;
     private int[] bankOffsets;
     private ItemStack[] bankItems;
     private IPeripheralMemory[] bankHandlers;
     private static final int BANKS = 256;
     private static final int BANKSIZE = 256;
     private static final int MEMSIZE = BANKS * BANKSIZE;
-    public MemoryHandler() {
+    public MemoryHandler(CPUThread c) {
+        cpu = c;
         bankOffsets = new int[BANKS];
         bankItems = new ItemStack[BANKS];
         bankHandlers = new IPeripheralMemory[BANKS];
@@ -27,10 +29,11 @@ public class MemoryHandler {
         if((position % BANKSIZE) != 0) return false; // Has to be on a page
         int sizeBanks = (int)Math.ceil(mem.getSize(memStack)/BANKSIZE);
         int posBanks = (int)Math.floor(position / BANKSIZE);
-        if(posBanks+sizeBanks >= BANKS) return false; // No overflow
+        ModularComputing.debug("[MH] Adding handler " + mem.getClass().getName() + " @ " + Integer.toHexString(position) + ", size "+Integer.toHexString(mem.getSize(memStack)));
         mem.init(memStack);
         for(int i=0;i<sizeBanks;i++) {
-            bankOffsets[posBanks+i] = posBanks;
+            if(posBanks+i >= BANKS) break; // No overflow
+            bankOffsets[posBanks+i] = posBanks*BANKSIZE;
             bankItems[posBanks+i] = memStack;
             bankHandlers[posBanks+i] = mem;
         }
@@ -41,13 +44,16 @@ public class MemoryHandler {
         int posBanks = (int)Math.floor(pos / BANKSIZE);
 	if(bankHandlers[posBanks] == null) return 0; // No handler
         int posBytes = pos - bankOffsets[posBanks];
-        return bankHandlers[posBanks].read8(bankItems[posBanks], posBytes);
+        int out = bankHandlers[posBanks].read8(cpu, bankItems[posBanks], posBytes);
+        ModularComputing.debug("[MH] Read " + Integer.toHexString(out) + " @ " + Integer.toHexString(pos));
+        return out;
     }
     public void write8(int pos, int val) {
         if(pos<0 || pos>=MEMSIZE) return; // Under/overflow
+        ModularComputing.debug("[MH] Write "+Integer.toHexString(val & 0xFF)+" @ " + Integer.toHexString(pos));
         int posBanks = (int)Math.floor(pos / BANKSIZE);
 	if(bankHandlers[posBanks] == null) return; // No handler
         int posBytes = pos - bankOffsets[posBanks];
-        bankHandlers[posBanks].write8(bankItems[posBanks], posBytes, val & 0xFF);
+        bankHandlers[posBanks].write8(cpu, bankItems[posBanks], posBytes, val & 0xFF);
     }
 }
